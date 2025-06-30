@@ -1,0 +1,13 @@
+Query? 
+Query: Length: 18
+Start: wikipedia or drink
+Word: wikipedia
+Start: or drink
+Word: or
+Start: drink
+Word: drink
+Words: wikipedia
+	3 added
+Matches 3 documents
+Score  1 doc http://cs50tse.cs.dartmouth.edu/tse/
+Score  6 doc http://cs50tse.cs.dartmouth.edu/tse/wikipedia/

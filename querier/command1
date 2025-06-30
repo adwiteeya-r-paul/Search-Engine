@@ -1,0 +1,11 @@
+Query? 
+Query: Length: 19
+Start: wikipedia and drink
+Word: wikipedia
+Start: and drink
+Word: and
+Start: drink
+Word: drink
+Words: wikipedia
+Matches 1 documents
+Score  1 doc http://cs50tse.cs.dartmouth.edu/tse/toscrape/

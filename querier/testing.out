@@ -1,0 +1,84 @@
+bash -v testing.sh
+module () {  local _mlredir=1;
+ if [ -n "${MODULES_REDIRECT_OUTPUT+x}" ]; then
+ if [ "$MODULES_REDIRECT_OUTPUT" = '0' ]; then
+ _mlredir=0;
+ else
+ if [ "$MODULES_REDIRECT_OUTPUT" = '1' ]; then
+ _mlredir=1;
+ fi;
+ fi;
+ fi;
+ case " $@ " in 
+ *' --no-redirect '*)
+ _mlredir=0
+ ;;
+ *' --redirect '*)
+ _mlredir=1
+ ;;
+ esac;
+ if [ $_mlredir -eq 0 ]; then
+ _module_raw "$@";
+ else
+ _module_raw "$@" 2>&1;
+ fi
+}
+ml () {  module ml "$@"
+}
+_module_raw () {  eval "$(/usr/bin/tclsh8.6 '/usr/lib/x86_64-linux-gnu/modulecmd.tcl' bash "$@")";
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+#test script for querier.c
+#adwiteeya rupantee paul
+#5/23/25
+#pass two command line arguments: pageDirectory and indexFile
+# zero arguments                                                              
+./querier
+Usage: ./querier pageDirectory indexFilename
+# one argument                                                                      
+./querier ../direct 
+Usage: ./querier pageDirectory indexFilename
+# two arguments
+./querier ../direct ../indexer/file
+Query? 
+Query:
+# three or more arguments                                                                     
+./querier ../data ../data ../data
+Usage: ./querier pageDirectory indexFilename
+# invalid pageDirectory                                                  
+./querier data ../indexer/file
+Usage: ./querier pageDirectory indexFilename
+# invalid pageDirectory (not a crawler directory)
+./querier ../common
+Usage: ./querier pageDirectory indexFilename
+# invalid indexFile
+./querier hello
+Usage: ./querier pageDirectory indexFilename
+# invalid indexFile (read-only directory)
+./querier ../directory ../indexer/test
+Usage: ./querier pageDirectory indexFilename
+# invalid indexFile (read-only)
+./querier ../directory ../directory/file
+Usage: ./querier pageDirectory indexFilename
+# querier on different pageDirectories 
+# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../direct 2)
+./querier ../direct ../indexer/file
+Query? 
+Query:
+# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 1)
+./querier ../data ../indexer/file
+Query? 
+Query:
+# querier on different indexFiles
+./querier ../data ../indexer/file
+Query? 
+Query:
+./querier ../data ../indexer/file2
+Query? 
+Query:
+# Valgrind with querier
+valgrind ./querier ../indexer/file
+Query?
+Query:

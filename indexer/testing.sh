@@ -20,20 +20,20 @@
 # invalid indexFile (read-only directory)
 ./indexer ../testdirectory3 testfile3
 # invalid indexFile (read-only)
-./indexer ../testdirectory1 ../testdirectory3/file
+./indexer ../testdirectory1 ../testdirectory3/testfile1
 # indexer on different pageDirectories 
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../testdirectory2 2)
 ./indexer ../testdirectory2 testfile1
-# Indextest on direct
+# Indextest on testdirectory2
 ./indextest testfile1 testfile2
 # matching with indexcmp
 ~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
-# Indextest on data
+# Indextest on testdirectory1
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 1)
 ./indexer ../testdirectory1 testfile3
-# Indextest on data
+# Indextest on testdirectory1
 ./indextest testfile1 testfile2
-# matching indexer on data
+# matching indexer on testdirectory1
 ~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
 # Valgrind with indexer
 valgrind ./indexer ../testdirectory1 testfile3

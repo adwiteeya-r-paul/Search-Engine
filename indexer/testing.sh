@@ -18,24 +18,24 @@
 # invalid indexFile
 ./indexer hello
 # invalid indexFile (read-only directory)
-./indexer ../directory test
+./indexer ../directory testfile3
 # invalid indexFile (read-only)
 ./indexer ../data ../directory/file
 # indexer on different pageDirectories 
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../direct 2)
-./indexer ../direct file
+./indexer ../direct testfile1
 # Indextest on direct
-./indextest file file2
+./indextest testfile1 testfile2
 # matching with indexcmp
-~/cs50-dev/shared/tse/indexcmp file file2
+~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
 # Indextest on data
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 1)
-./indexer ../data test
+./indexer ../data testfile3
 # Indextest on data
-./indextest file file2
+./indextest testfile1 testfile2
 # matching indexer on data
-~/cs50-dev/shared/tse/indexcmp file file2
+~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
 # Valgrind with indexer
-valgrind ./indexer ../data test
+valgrind ./indexer ../data testfile3
 # Valgrind with indextest
-valgrind ./indextest ../data/1 testy
+valgrind ./indextest ../data/1 testfile4

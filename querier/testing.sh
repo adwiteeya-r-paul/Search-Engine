@@ -21,7 +21,7 @@
 # invalid indexFile (read-only directory)
 ./querier ../testdirectory3 ../indexer/testfile3
 # invalid indexFile (read-only)
-./querier ../testdirectory3 ../directory/testfile1
+./querier ../testdirectory3 ../testdirectory3/testfile1
 # querier on different pageDirectories 
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../testdirectory2 2)
 ./querier ../testdirectory2 ../indexer/testfile1

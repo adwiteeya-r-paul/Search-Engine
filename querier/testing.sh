@@ -7,32 +7,32 @@
 # zero arguments                                                              
 ./querier
 # one argument                                                                      
-./querier ../direct 
+./querier ../testdirectory2 
 # two arguments
-./querier ../direct ../indexer/file
+./querier ../testdirectory2 ../indexer/testfile1
 # three or more arguments                                                                     
-./indexer ../data ../data ../data
+./indexer ../testdirectory1 ../testdirectory1 ../testdirectory1
 # invalid pageDirectory                                                  
-./querier data
+./querier testdirectory1
 # invalid pageDirectory (not a crawler directory)
 ./querier ../common
 # invalid indexFile
 ./querier hello
 # invalid indexFile (read-only directory)
-./querier ../directory ../indexer/test
+./querier ../testdirectory3 ../indexer/testfile3
 # invalid indexFile (read-only)
-./querier ../directory ../directory/file
+./querier ../testdirectory3 ../directory/testfile1
 # querier on different pageDirectories 
-# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../direct 2)
-./querier ../direct ../indexer/file
-# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 1)
-./querier ../data ../indexer/file
+# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../testdirectory2 2)
+./querier ../testdirectory2 ../indexer/testfile1
+# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../testdirectory1 1)
+./querier ../testdirectory1 ../indexer/testfile1
 # querier on different indexFiles
-./querier ../data ../indexer/file
-./querier ../data ../indexer/file2
-# Indextest on direct
-./indextest file ../indexer/file2
+./querier ../testdirectory1 ../indexer/testfile1
+./querier ../testdirectory1 ../indexer/testfile2
+# Indextest on testdirectory2
+./indextest testfile1 ../indexer/testfile2
 # Valgrind with querier
-valgrind ./querier ../data/ ../indexer/file
+valgrind ./querier ../testdirectory1 ../indexer/testfile1
 # Valgrind with querier
-valgrind ./querier ../data/ ../indexer/file2
+valgrind ./querier ../testdirectory1 ../indexer/testfile2

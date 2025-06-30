@@ -1,0 +1,691 @@
+ml () {  module ml "$@"
+}
+module () {  local _mlredir=1;
+ if [ -n "${MODULES_REDIRECT_OUTPUT+x}" ]; then
+ if [ "$MODULES_REDIRECT_OUTPUT" = '0' ]; then
+ _mlredir=0;
+ else
+ if [ "$MODULES_REDIRECT_OUTPUT" = '1' ]; then
+ _mlredir=1;
+ fi;
+ fi;
+ fi;
+ case " $@ " in 
+ *' --no-redirect '*)
+ _mlredir=0
+ ;;
+ *' --redirect '*)
+ _mlredir=1
+ ;;
+ esac;
+ if [ $_mlredir -eq 0 ]; then
+ _module_raw "$@";
+ else
+ _module_raw "$@" 2>&1;
+ fi
+}
+_module_raw () {  eval "$(/usr/bin/tclsh8.6 '/usr/lib/x86_64-linux-gnu/modulecmd.tcl' bash "$@")";
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+#test script for crawler.c
+#adwiteeya rupantee paul
+#5/7/25
+#pass three command line arguments: seedURL, pageDirectory and maxDepth
+
+# zero arguments                                                              
+./crawler
+Usage: seedURL, pageDirectory, maxDepth
+# one argument
+./crawler http://cs50tse.cs.dartmouth.edu/tse/
+Usage: seedURL, pageDirectory, maxDepth
+ two arguments                                                                     
+./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data
+Usage: seedURL, pageDirectory, maxDepth
+# invalid URL                                                    
+./crawler http:// ../data 0
+NULL POINTER: invalid seedurl
+invalid seedurl
+# invalid pageDirectory
+./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../datadata 0
+Error: could not create a file of form pageDirectory/.crawler
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/
+Error: could not create or write a file of pageDirectory/id
+Segmentation fault (core dumped)
+# maxDepth out of range
+./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 100
+maxDepth must be a non-negative integer from 0 to 10
+# maxDepth out of range
+./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data -1
+maxDepth must be a non-negative integer from 0 to 10
+# crawling letters till depth 0
+./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 0
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/
+End of bag_delete: 206 malloc, 206 free, 0 free(NULL), 0 net
+# crawling letters till depth 1
+./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 1
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+After bag_insert: 209 malloc, 1 free, 0 free(NULL), 208 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+End of bag_delete: 209 malloc, 209 free, 0 free(NULL), 0 net
+# crawling letters till depth 10
+./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 10
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+After bag_insert: 209 malloc, 1 free, 0 free(NULL), 208 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+1   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+1   Found: https://en.wikipedia.org/wiki/Algorithm
+1   IgnExtrn: https://en.wikipedia.org/wiki/Algorithm
+1   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+After bag_insert: 212 malloc, 2 free, 0 free(NULL), 210 net
+1   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+1   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+After bag_insert: 215 malloc, 2 free, 0 free(NULL), 213 net
+1   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+2   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+2   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+2   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+2   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+2   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+2   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+2   Found: https://en.wikipedia.org/wiki/Breadth-first_search
+2   IgnExtrn: https://en.wikipedia.org/wiki/Breadth-first_search
+2   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+After bag_insert: 218 malloc, 4 free, 0 free(NULL), 214 net
+2   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+2   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+After bag_insert: 221 malloc, 4 free, 0 free(NULL), 217 net
+2   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+2   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+After bag_insert: 224 malloc, 4 free, 0 free(NULL), 220 net
+2   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+2   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+2   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+3   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+3   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/E.html
+3   Found: https://en.wikipedia.org/wiki/ENIAC
+3   IgnExtrn: https://en.wikipedia.org/wiki/ENIAC
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+After bag_insert: 227 malloc, 5 free, 0 free(NULL), 222 net
+3   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+After bag_insert: 230 malloc, 5 free, 0 free(NULL), 225 net
+3   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+3   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+3   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+4   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+4   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/G.html
+4   Found: https://en.wikipedia.org/wiki/Graph_traversal
+4   IgnExtrn: https://en.wikipedia.org/wiki/Graph_traversal
+4   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+After bag_insert: 233 malloc, 6 free, 0 free(NULL), 227 net
+4   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+4   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+4   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+5   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+5   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+5   Found: https://en.wikipedia.org/wiki/Huffman_coding
+5   IgnExtrn: https://en.wikipedia.org/wiki/Huffman_coding
+5   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+5   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+5   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+5   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+4   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+4   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+4   Found: https://en.wikipedia.org/wiki/Fast_Fourier_transform
+4   IgnExtrn: https://en.wikipedia.org/wiki/Fast_Fourier_transform
+4   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+4   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+4   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+4   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+3   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+3   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+3   Found: https://en.wikipedia.org/wiki/Depth-first_search
+3   IgnExtrn: https://en.wikipedia.org/wiki/Depth-first_search
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+3   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+3   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+3   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+3   Found: https://en.wikipedia.org/wiki/Computational_biology
+3   IgnExtrn: https://en.wikipedia.org/wiki/Computational_biology
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+3   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+3   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+3   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+End of bag_delete: 233 malloc, 233 free, 0 free(NULL), 0 net
+# crawling toscrape till depth 0
+./crawler http://cs50tse.cs.dartmouth.edu/tse/toscrape/ ../data 0
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+End of bag_delete: 206 malloc, 206 free, 0 free(NULL), 0 net
+# crawling toscrape till depth 1
+./crawler http://cs50tse.cs.dartmouth.edu/tse/toscrape/ ../data 1
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+0   Scanning: http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+After bag_insert: 209 malloc, 1 free, 0 free(NULL), 208 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books_1/index.html
+After bag_insert: 212 malloc, 1 free, 0 free(NULL), 211 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books_1/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/travel_2/index.html
+After bag_insert: 215 malloc, 1 free, 0 free(NULL), 214 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/travel_2/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/mystery_3/index.html
+After bag_insert: 218 malloc, 1 free, 0 free(NULL), 217 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/mystery_3/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
+After bag_insert: 221 malloc, 1 free, 0 free(NULL), 220 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sequential-art_5/index.html
+After bag_insert: 224 malloc, 1 free, 0 free(NULL), 223 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sequential-art_5/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/classics_6/index.html
+After bag_insert: 227 malloc, 1 free, 0 free(NULL), 226 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/classics_6/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/philosophy_7/index.html
+After bag_insert: 230 malloc, 1 free, 0 free(NULL), 229 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/philosophy_7/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/romance_8/index.html
+After bag_insert: 233 malloc, 1 free, 0 free(NULL), 232 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/romance_8/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/womens-fiction_9/index.html
+After bag_insert: 236 malloc, 1 free, 0 free(NULL), 235 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/womens-fiction_9/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fiction_10/index.html
+After bag_insert: 239 malloc, 1 free, 0 free(NULL), 238 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fiction_10/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/childrens_11/index.html
+After bag_insert: 242 malloc, 1 free, 0 free(NULL), 241 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/childrens_11/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/religion_12/index.html
+After bag_insert: 245 malloc, 1 free, 0 free(NULL), 244 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/religion_12/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/nonfiction_13/index.html
+After bag_insert: 248 malloc, 1 free, 0 free(NULL), 247 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/nonfiction_13/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/music_14/index.html
+After bag_insert: 251 malloc, 1 free, 0 free(NULL), 250 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/music_14/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/default_15/index.html
+After bag_insert: 254 malloc, 1 free, 0 free(NULL), 253 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/default_15/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science-fiction_16/index.html
+After bag_insert: 257 malloc, 1 free, 0 free(NULL), 256 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science-fiction_16/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sports-and-games_17/index.html
+After bag_insert: 260 malloc, 1 free, 0 free(NULL), 259 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sports-and-games_17/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/add-a-comment_18/index.html
+After bag_insert: 263 malloc, 1 free, 0 free(NULL), 262 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/add-a-comment_18/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fantasy_19/index.html
+After bag_insert: 266 malloc, 1 free, 0 free(NULL), 265 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fantasy_19/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/new-adult_20/index.html
+After bag_insert: 269 malloc, 1 free, 0 free(NULL), 268 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/new-adult_20/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/young-adult_21/index.html
+After bag_insert: 272 malloc, 1 free, 0 free(NULL), 271 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/young-adult_21/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science_22/index.html
+After bag_insert: 275 malloc, 1 free, 0 free(NULL), 274 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science_22/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/poetry_23/index.html
+After bag_insert: 278 malloc, 1 free, 0 free(NULL), 277 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/poetry_23/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+After bag_insert: 281 malloc, 1 free, 0 free(NULL), 280 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/art_25/index.html
+After bag_insert: 284 malloc, 1 free, 0 free(NULL), 283 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/art_25/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/psychology_26/index.html
+After bag_insert: 287 malloc, 1 free, 0 free(NULL), 286 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/psychology_26/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/autobiography_27/index.html
+After bag_insert: 290 malloc, 1 free, 0 free(NULL), 289 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/autobiography_27/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+After bag_insert: 293 malloc, 1 free, 0 free(NULL), 292 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+After bag_insert: 296 malloc, 1 free, 0 free(NULL), 295 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/humor_30/index.html
+After bag_insert: 299 malloc, 1 free, 0 free(NULL), 298 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/humor_30/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/horror_31/index.html
+After bag_insert: 302 malloc, 1 free, 0 free(NULL), 301 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/horror_31/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/history_32/index.html
+After bag_insert: 305 malloc, 1 free, 0 free(NULL), 304 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/history_32/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/food-and-drink_33/index.html
+After bag_insert: 308 malloc, 1 free, 0 free(NULL), 307 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/food-and-drink_33/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian-fiction_34/index.html
+After bag_insert: 311 malloc, 1 free, 0 free(NULL), 310 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian-fiction_34/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/business_35/index.html
+After bag_insert: 314 malloc, 1 free, 0 free(NULL), 313 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/business_35/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+After bag_insert: 317 malloc, 1 free, 0 free(NULL), 316 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/thriller_37/index.html
+After bag_insert: 320 malloc, 1 free, 0 free(NULL), 319 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/thriller_37/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/contemporary_38/index.html
+After bag_insert: 323 malloc, 1 free, 0 free(NULL), 322 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/contemporary_38/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/spirituality_39/index.html
+After bag_insert: 326 malloc, 1 free, 0 free(NULL), 325 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/spirituality_39/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+After bag_insert: 329 malloc, 1 free, 0 free(NULL), 328 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/self-help_41/index.html
+After bag_insert: 332 malloc, 1 free, 0 free(NULL), 331 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/self-help_41/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical_42/index.html
+After bag_insert: 335 malloc, 1 free, 0 free(NULL), 334 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical_42/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian_43/index.html
+After bag_insert: 338 malloc, 1 free, 0 free(NULL), 337 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian_43/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+After bag_insert: 341 malloc, 1 free, 0 free(NULL), 340 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+After bag_insert: 344 malloc, 1 free, 0 free(NULL), 343 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+After bag_insert: 347 malloc, 1 free, 0 free(NULL), 346 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/health_47/index.html
+After bag_insert: 350 malloc, 1 free, 0 free(NULL), 349 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/health_47/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/politics_48/index.html
+After bag_insert: 353 malloc, 1 free, 0 free(NULL), 352 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/politics_48/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+After bag_insert: 356 malloc, 1 free, 0 free(NULL), 355 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+After bag_insert: 359 malloc, 1 free, 0 free(NULL), 358 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+After bag_insert: 362 malloc, 1 free, 0 free(NULL), 361 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+After bag_insert: 365 malloc, 1 free, 0 free(NULL), 364 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+After bag_insert: 368 malloc, 1 free, 0 free(NULL), 367 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+After bag_insert: 371 malloc, 1 free, 0 free(NULL), 370 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+After bag_insert: 374 malloc, 1 free, 0 free(NULL), 373 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+After bag_insert: 377 malloc, 1 free, 0 free(NULL), 376 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+After bag_insert: 380 malloc, 1 free, 0 free(NULL), 379 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+After bag_insert: 383 malloc, 1 free, 0 free(NULL), 382 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+After bag_insert: 386 malloc, 1 free, 0 free(NULL), 385 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+After bag_insert: 389 malloc, 1 free, 0 free(NULL), 388 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+After bag_insert: 392 malloc, 1 free, 0 free(NULL), 391 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+After bag_insert: 395 malloc, 1 free, 0 free(NULL), 394 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+After bag_insert: 398 malloc, 1 free, 0 free(NULL), 397 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+After bag_insert: 401 malloc, 1 free, 0 free(NULL), 400 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+After bag_insert: 404 malloc, 1 free, 0 free(NULL), 403 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+After bag_insert: 407 malloc, 1 free, 0 free(NULL), 406 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+After bag_insert: 410 malloc, 1 free, 0 free(NULL), 409 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+After bag_insert: 413 malloc, 1 free, 0 free(NULL), 412 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+After bag_insert: 416 malloc, 1 free, 0 free(NULL), 415 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+After bag_insert: 419 malloc, 1 free, 0 free(NULL), 418 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+After bag_insert: 422 malloc, 1 free, 0 free(NULL), 421 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+0   IgnDupl: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/page-2.html
+After bag_insert: 425 malloc, 1 free, 0 free(NULL), 424 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/page-2.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/page-2.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/page-2.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/libertarianism-for-beginners_982/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/rip-it-up-and-start-again_986/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/set-me-free_988/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/shakespeares-sonnets_989/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/sharp-objects_997/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/tipping-the-velvet_999/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/crime_51/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/erotica_50/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/cultural_49/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/politics_48/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/politics_48/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/health_47/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/health_47/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/novels_46/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/short-stories_45/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/suspense_44/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian_43/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian_43/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical_42/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical_42/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/self-help_41/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/self-help_41/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/academic_40/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/spirituality_39/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/spirituality_39/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/contemporary_38/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/contemporary_38/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/thriller_37/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/thriller_37/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/biography_36/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/business_35/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/business_35/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian-fiction_34/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/christian-fiction_34/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/food-and-drink_33/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/food-and-drink_33/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/history_32/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/history_32/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/horror_31/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/horror_31/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/humor_30/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/humor_30/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/adult-fiction_29/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/parenting_28/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/autobiography_27/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/autobiography_27/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/psychology_26/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/psychology_26/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/art_25/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/art_25/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/paranormal_24/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/poetry_23/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/poetry_23/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science_22/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science_22/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/young-adult_21/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/young-adult_21/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/new-adult_20/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/new-adult_20/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fantasy_19/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fantasy_19/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/add-a-comment_18/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/add-a-comment_18/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sports-and-games_17/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sports-and-games_17/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science-fiction_16/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/science-fiction_16/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/default_15/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/default_15/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/music_14/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/music_14/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/nonfiction_13/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/nonfiction_13/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/religion_12/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/religion_12/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/childrens_11/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/childrens_11/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fiction_10/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/fiction_10/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/womens-fiction_9/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/womens-fiction_9/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/romance_8/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/romance_8/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/philosophy_7/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/philosophy_7/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/classics_6/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/classics_6/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sequential-art_5/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/sequential-art_5/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/mystery_3/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/mystery_3/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/travel_2/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/travel_2/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books_1/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books_1/index.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/toscrape/index.html
+End of bag_delete: 425 malloc, 425 free, 0 free(NULL), 0 net
+#crawling wikipedia till depth 0
+./crawler http://cs50tse.cs.dartmouth.edu/tse/wikipedia/ ../data 0
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+End of bag_delete: 206 malloc, 206 free, 0 free(NULL), 0 net
+#crawling wikipedia till depth 1
+./crawler http://cs50tse.cs.dartmouth.edu/tse/wikipedia/ ../data 1
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+0   Scanning: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+After bag_insert: 209 malloc, 1 free, 0 free(NULL), 208 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+After bag_insert: 212 malloc, 1 free, 0 free(NULL), 211 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+After bag_insert: 215 malloc, 1 free, 0 free(NULL), 214 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+After bag_insert: 218 malloc, 1 free, 0 free(NULL), 217 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+After bag_insert: 221 malloc, 1 free, 0 free(NULL), 220 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+After bag_insert: 224 malloc, 1 free, 0 free(NULL), 223 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+End of bag_delete: 224 malloc, 224 free, 0 free(NULL), 0 net
+# Valgrind with letters 0
+valgrind ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 0
+==4022622== Memcheck, a memory error detector
+==4022622== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==4022622== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==4022622== Command: ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 0
+==4022622== 
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/
+End of bag_delete: 206 malloc, 206 free, 0 free(NULL), 0 net
+==4022622== 
+==4022622== HEAP SUMMARY:
+==4022622==     in use at exit: 0 bytes in 0 blocks
+==4022622==   total heap usage: 433 allocs, 433 frees, 58,497 bytes allocated
+==4022622== 
+==4022622== All heap blocks were freed -- no leaks are possible
+==4022622== 
+==4022622== For lists of detected and suppressed errors, rerun with: -s
+==4022622== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+#Valgrind with letters 1
+valgrind ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 1
+==4029452== Memcheck, a memory error detector
+==4029452== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==4029452== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==4029452== Command: ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data 1
+==4029452== 
+After bag_insert: 206 malloc, 0 free, 0 free(NULL), 206 net
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Scanning: http://cs50tse.cs.dartmouth.edu/tse/letters/
+0   Found: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+After bag_insert: 209 malloc, 1 free, 0 free(NULL), 208 net
+0   Added: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+Crawling: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+1   Fetched: http://cs50tse.cs.dartmouth.edu/tse/letters/A.html
+End of bag_delete: 209 malloc, 209 free, 0 free(NULL), 0 net
+==4029452== 
+==4029452== HEAP SUMMARY:
+==4029452==     in use at exit: 0 bytes in 0 blocks
+==4029452==   total heap usage: 541 allocs, 541 frees, 86,320 bytes allocated
+==4029452== 
+==4029452== All heap blocks were freed -- no leaks are possible
+==4029452== 
+==4029452== For lists of detected and suppressed errors, rerun with: -s
+==4029452== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -8,34 +8,34 @@
 # zero arguments                                                              
 ./indexer
 # one argument                                                                      
-./indexer ../data
+./indexer ../testdirectory1
 # three or more arguments                                                                     
-./indexer ../data ../data ../data
+./indexer ../testdirectory1 ../testdirectory1 ../testdirectory1
 # invalid pageDirectory                                                  
-./indexer data
+./indexer testdirectory1
 # invalid pageDirectory (not a crawler directory)
 ./indexer ../common
 # invalid indexFile
 ./indexer hello
 # invalid indexFile (read-only directory)
-./indexer ../directory testfile3
+./indexer ../testdirectory3 testfile3
 # invalid indexFile (read-only)
-./indexer ../data ../directory/file
+./indexer ../testdirectory1 ../testdirectory3/file
 # indexer on different pageDirectories 
-# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../direct 2)
-./indexer ../direct testfile1
+# created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../testdirectory2 2)
+./indexer ../testdirectory2 testfile1
 # Indextest on direct
 ./indextest testfile1 testfile2
 # matching with indexcmp
 ~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
 # Indextest on data
 # created by: (./crawler http://cs50tse.cs.dartmouth.edu/tse/ ../data 1)
-./indexer ../data testfile3
+./indexer ../testdirectory1 testfile3
 # Indextest on data
 ./indextest testfile1 testfile2
 # matching indexer on data
 ~/cs50-dev/shared/tse/indexcmp testfile1 testfile2
 # Valgrind with indexer
-valgrind ./indexer ../data testfile3
+valgrind ./indexer ../testdirectory1 testfile3
 # Valgrind with indextest
-valgrind ./indextest ../data/1 testfile4
+valgrind ./indextest ../testdirectory/1 testfile4
